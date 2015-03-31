@@ -1,32 +1,22 @@
 package pl.kosinski;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Scanner;
-import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
-import javax.crypto.spec.SecretKeySpec;
+
 import javax.swing.JOptionPane;
 
 public class Projekt {
-	private Cipher cipher = null;
+
 	private ArrayList<String> lista = new ArrayList<String>();
 	static boolean wyjscie = false;
-	private static String aktualnyUser = null;
+	public static String aktualnyUser = null;
 	public static void main(String[] args) {
 		Projekt p = new Projekt();
-			User.add("admin", "1234");
-			User.add("marian", "4321");
+		//Hasla ponad 8 znaków !!
+			User.add("admin", "12345678");
+			User.add("marian", "qwertyui");
 			
 			while(!wyjscie){
 			aktualnyUser = JOptionPane.showInputDialog(null,"Podaj nazwê U¿ytkownika");
@@ -107,18 +97,17 @@ public class Projekt {
 			lista.remove(0);
 		}
 		File plik = null;
-		Scanner odczyt = null;
+
 		try {
 			plik = new File("plik uzytkownika " + aktualnyUser +".txt");
-			odczyt = new Scanner(plik);
-		} catch (FileNotFoundException e) {
+			lista = szyfr.deszyfruj(new FileInputStream(plik));
+		} catch (Exception e) {
 			System.out.println("B³¹d odczytu pliku");
+			e.printStackTrace();
 			return;
 		}
-		while(odczyt.hasNext()){
-			lista.add(odczyt.nextLine());
-		}
-		odczyt.close();
+		
+		
 		System.out.println("Plik wczytany");
 	}
 
@@ -129,29 +118,24 @@ public class Projekt {
 		}
 		File plik = new File("plik uzytkownika " + aktualnyUser +".txt");
 		try{
-		initSzyfr();
+			
+
+		
 		}catch(Exception e){
 			System.out.println("B³¹d szyfrowania");
 			e.printStackTrace();
 		}
 		FileOutputStream strumien = null;
-		PrintWriter writer = null;
-		CipherOutputStream strumien_sz = null;
-		OutputStreamWriter osw = null;
+
 		try {
 			strumien = new FileOutputStream(plik);
-			strumien_sz = new CipherOutputStream(strumien,cipher);
-			osw = new OutputStreamWriter(strumien_sz);
-			writer = new PrintWriter(osw);
+
 		} catch (Exception e) {
 			System.out.println("NIe mozna zapisaæ pliku");
 		}
-		for(String x:lista){
-			writer.println(x);
-		}
 		try{
+		szyfr.szyfruj(strumien,lista);
 			strumien.close();
-			writer.close();
 		}catch(Exception e){}
 		
 		System.out.println("Zapisano do pliku");
@@ -208,18 +192,6 @@ public class Projekt {
 		
 		}
 	}
-	private void initSzyfr() throws Exception{
-		String key = "";
-		while(key.length()<8){
-		key = JOptionPane.showInputDialog(null,"Podaj has³o do pliku (min. 8 znaków)");
-		}
-		DESKeySpec dks = new DESKeySpec(key.getBytes());
-		SecretKeyFactory skf = SecretKeyFactory.getInstance("DES");
-		SecretKey desKey = skf.generateSecret(dks);
-		Cipher cipher = Cipher.getInstance("DES"); 
-		cipher.init(Cipher.ENCRYPT_MODE, desKey);
-		
-		
-	}
+
 
 }
