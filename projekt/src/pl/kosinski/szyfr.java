@@ -15,13 +15,12 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-import javax.swing.JOptionPane;
 
 public class szyfr {
 	public static void szyfruj(FileOutputStream strumien,
-			ArrayList<String> lista) throws Exception {
+			ArrayList<String> lista,String klucz) throws Exception {
 
-		String skey = User.get(Projekt.aktualnyUser).getSzyfr();
+		String skey = klucz;
 		
 		DESKeySpec dks = new DESKeySpec(skey.getBytes());
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("DES");
@@ -38,14 +37,10 @@ public class szyfr {
 
 	}
 
-	public static ArrayList<String> deszyfruj(FileInputStream strumien)
+	public static ArrayList<String> deszyfruj(FileInputStream strumien,String klucz)
 			throws Exception {
 
-		String skey = User.get(Projekt.aktualnyUser).getSzyfr();
-		while (skey.length() < 8) {
-			skey = JOptionPane.showInputDialog(null,
-					"Podaj has³o do pliku (min. 8 znaków)");
-		}
+		String skey = klucz;
 
 		DESKeySpec dks = new DESKeySpec(skey.getBytes());
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("DES");

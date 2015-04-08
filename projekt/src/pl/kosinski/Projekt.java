@@ -100,7 +100,7 @@ public class Projekt {
 
 		try {
 			plik = new File("plik uzytkownika " + aktualnyUser +".txt");
-			lista = szyfr.deszyfruj(new FileInputStream(plik));
+			lista = szyfr.deszyfruj(new FileInputStream(plik),User.get(Projekt.aktualnyUser).getSzyfr());
 		} catch (Exception e) {
 			System.out.println("B³¹d odczytu pliku");
 			e.printStackTrace();
@@ -134,7 +134,7 @@ public class Projekt {
 			System.out.println("NIe mozna zapisaæ pliku");
 		}
 		try{
-		szyfr.szyfruj(strumien,lista);
+		szyfr.szyfruj(strumien,lista,User.get(Projekt.aktualnyUser).getSzyfr());
 			strumien.close();
 		}catch(Exception e){}
 		
